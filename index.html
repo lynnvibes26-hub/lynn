@@ -1,0 +1,136 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NeonLynn - Gamer Queen</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #ff69b4, #00ced1);
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    header {
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.7);
+    }
+    h1 {
+      font-size: 2.5em;
+      margin: 0;
+    }
+    .bio {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 10px;
+    }
+    .highlights img {
+      max-width: 300px;
+      margin: 10px;
+      border: 2px solid #fff;
+      border-radius: 5px;
+    }
+    .social {
+      margin: 20px 0;
+    }
+    .social a {
+      color: #fff;
+      margin: 0 15px;
+      text-decoration: none;
+      font-size: 1.2em;
+    }
+    .social a:hover {
+      color: #ff69b4;
+    }
+    .fanvue {
+      padding: 20px;
+      background: #ff69b4;
+      color: #000;
+      font-weight: bold;
+    }
+    @media (max-width: 600px) {
+      h1 { font-size: 1.8em; }
+      .bio { padding: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>NeonLynn</h1>
+    <p>Gamer Queen | Pixelvendetta’s Voice</p>
+  </header>
+  <div class="bio">
+    <p>🎮 Dominating *Valorant* and *Cyberpunk 2077* with pink/teal flair. 🌺 Tattooed and unfiltered, I bring brutal gaming takes to <a href="https://x.com/Pix3lvendetta" target="_blank" style="color: #ff69b4;">@Pix3lvendetta</a>. Catch my exclusive content on Fanvue! 💜💙</p>
+  </div>
+  <div class="highlights">
+    <h2>Gaming Highlights</h2>
+    <img src="https://via.placeholder.com/300x200.png?text=Valorant+Win" alt="Valorant Win">
+    <img src="https://via.placeholder.com/300x200.png?text=Cyberpunk+2077" alt="Cyberpunk 2077">
+  </div>
+  <div class="social">
+    <a href="https://instagram.com/NeonLynnVibes" target="_blank">Instagram</a>
+    <a href="https://x.com/Pix3lvendetta" target="_blank">X</a>
+    <a href="https://fanvue.com/NeonLynn" target="_blank">Fanvue</a>
+  </div>
+  <div class="fanvue">
+    <p>Unlock my unfiltered world on Fanvue! 👉 <a href="https://fanvue.com/NeonLynn" target="_blank" style="color: #000; font-weight: bold;">Join Now</a></p>
+  </div>
+  <script>
+    // Simple animation for engagement
+    window.onload = function() {
+      const links = document.querySelectorAll('.social a');
+      links.forEach(link => {
+        link.addEventListener('mouseover', () => {
+          link.style.transform = 'scale(1.1)';
+        });
+        link.addEventListener('mouseout', () => {
+          link.style.transform = 'scale(1)';
+        });
+      });
+    };
+  </script>
+</body>
+</html>
